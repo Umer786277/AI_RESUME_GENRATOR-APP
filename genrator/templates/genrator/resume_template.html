@@ -1,0 +1,88 @@
+<!-- templates/genrator/resume_template.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Your Professional Resume</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .card { border: 1px solid #ccc; border-radius: 10px; overflow: hidden; }
+        .card-header { background-color: #007bff; color: white; padding: 15px; }
+        .card-body { padding: 20px; }
+        .section { margin-bottom: 25px; }
+        .section-title { font-size: 20px; font-weight: bold; margin-bottom: 10px; }
+        .skills-list ul, .achievement-list { list-style-type: disc; padding-left: 20px; }
+        .company-name { font-weight: bold; font-size: 16px; margin-top: 10px; }
+        .position-dates { font-style: italic; }
+    </style>
+</head>
+<body>
+{% if resume_data %}
+    <div class="card resume-card">
+        <div class="card-header">
+            <h3 class="mb-0">Your Professional Resume</h3>
+        </div>
+        <div class="card-body">
+            <div class="section">
+                <h3 class="section-title">Professional Summary</h3>
+                <div class="section-content">{{ resume_data.professional_summary }}</div>
+            </div>
+
+            <div class="section">
+                <h3 class="section-title">Skills</h3>
+                <div class="skills-list">
+                    <ul>
+                        {% for skill in resume_data.skills %}
+                            <li>{{ skill }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3 class="section-title">Work Experience</h3>
+                {% if resume_data.work_experience %}
+                    {% for job in resume_data.work_experience %}
+                        <div class="experience-item">
+                            <h4 class="company-name">{{ job.company }}</h4>
+                            <p class="position-dates">{{ job.job_title }}</p>
+                            <ul class="achievement-list">
+                                {% for responsibility in job.responsibilities %}
+                                    <li>{{ responsibility }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <div class="section">
+                <h3 class="section-title">Education</h3>
+                <h4>{{ resume_data.education.degree }}</h4>
+                <p class="text-muted">{{ resume_data.education.institution }} - {{ resume_data.education.year }}</p>
+                {% if resume_data.education.achievements %}
+                    <ul class="achievement-list">
+                        {% for achievement in resume_data.education.achievements %}
+                            <li>{{ achievement }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+
+            {% if resume_data.additional_achievements %}
+            <div class="section">
+                <h3 class="section-title">Additional Achievements</h3>
+                <ul class="achievement-list">
+                    {% for achievement in resume_data.additional_achievements %}
+                        <li>{{ achievement }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+{% else %}
+    <p>No resume data available.</p>
+{% endif %}
+</body>
+</html>

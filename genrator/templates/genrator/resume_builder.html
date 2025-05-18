@@ -1,0 +1,195 @@
+{% extends 'genrator/base.html' %}
+{% block title %}Resume Builder{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Loading Spinner -->
+    <div id="loader" class="text-center d-none">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2">Generating your professional resume...</p>
+    </div>
+
+    {% if resume_data %}
+        <div class="card mb-4 resume-card">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">Your Professional Resume</h3>
+            </div>
+            <div class="card-body">
+                <div class="section">
+                    <h3 class="section-title">Professional Summary</h3>
+                    <div class="section-content">{{ resume_data.professional_summary }}</div>
+                </div>
+
+                <div class="section">
+                    <h3 class="section-title">Skills</h3>
+                    <div class="skills-list">
+                        <ul>
+                            {% for skill in resume_data.skills %}
+                                <li>{{ skill }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3 class="section-title">Work Experience</h3>
+                    {% if resume_data.work_experience %}
+                        {% for job in resume_data.work_experience %}
+                            <div class="experience-item">
+                                <h4 class="company-name">{{ job.company }}</h4>
+                                <p class="position-dates">{{ job.job_title }}</p>
+                                <ul class="achievement-list">
+                                    {% for responsibility in job.responsibilities %}
+                                        <li>{{ responsibility }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                <div class="section">
+                    <h3 class="section-title">Education</h3>
+                    <h4>{{ resume_data.education.degree }}</h4>
+                    <p class="text-muted">{{ resume_data.education.institution }} - {{ resume_data.education.year }}</p>
+                    {% if resume_data.education.achievements %}
+                        <ul class="achievement-list">
+                            {% for achievement in resume_data.education.achievements %}
+                                <li>{{ achievement }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+
+                {% if resume_data.additional_achievements %}
+                <div class="section">
+                    <h3 class="section-title">Additional Achievements</h3>
+                    <ul class="achievement-list">
+                        {% for achievement in resume_data.additional_achievements %}
+                            <li>{{ achievement }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+            <div class="card-footer text-center">
+                <button class="btn btn-primary me-2" onclick="window.print()">Print Resume</button>
+                <button class="btn btn-secondary" onclick="window.location.reload()">Create New Resume</button>
+            </div>
+        </div>
+    {% else %}
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">Build Your Resume</h3>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="job_title" class="form-label">Job Title</label>
+                        <input type="text" class="form-control" id="job_title" name="job_title" required>
+                        <div class="form-text">Enter the position you're applying for</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="education" class="form-label">Education</label>
+                        <textarea class="form-control" id="education" name="education" rows="3" required></textarea>
+                        <div class="form-text">Enter your educational background (degrees, institutions, years)</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="experience" class="form-label">Work Experience</label>
+                        <textarea class="form-control" id="experience" name="experience" rows="4" required></textarea>
+                        <div class="form-text">Detail your work history, responsibilities, and achievements</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="skills" class="form-label">Skills</label>
+                        <textarea class="form-control" id="skills" name="skills" rows="3" required></textarea>
+                        <div class="form-text">List your relevant technical and soft skills</div>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Generate Resume</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    .resume-card {
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        margin-top: 2rem;
+    }
+    .section {
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #eee;
+    }
+    .section:last-child {
+        border-bottom: none;
+    }
+    .section-title {
+        color: #2c3e50;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #3498db;
+    }
+    .experience-item {
+        margin-bottom: 2rem;
+        padding-left: 1rem;
+        border-left: 3px solid #3498db;
+    }
+    .achievement-list {
+        padding-left: 1.5rem;
+        list-style-type: disc;
+    }
+    .achievement-list li {
+        margin-bottom: 0.5rem;
+        color: #2c3e50;
+    }
+    .skills-list ul {
+        columns: 2;
+        column-gap: 2rem;
+        list-style-type: disc;
+        padding-left: 1.5rem;
+    }
+    .skills-list li {
+        margin-bottom: 0.5rem;
+        break-inside: avoid;
+    }
+    @media print {
+        .navbar, .footer, .btn, .card-header {
+            display: none !important;
+        }
+        .card {
+            border: none !important;
+            box-shadow: none !important;
+        }
+        .section {
+            page-break-inside: avoid;
+        }
+        body {
+            padding: 2cm;
+        }
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    const loader = document.getElementById('loader');
+
+    if (form) {
+        form.addEventListener('submit', function() {
+            loader.classList.remove('d-none');
+            form.classList.add('d-none');
+        });
+    }
+});
+</script>
+{% endblock %}
