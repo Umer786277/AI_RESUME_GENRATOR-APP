@@ -41,7 +41,7 @@ An MVP (Minimum Viable Product) **AI-powered Resume Generator** built using the 
 
 ![Content Creation Output](ai_resume1.png)
 ![Content Creation Output](ai_resume2.png)
-![Content Creation Output](ai_resume1.png)
+![Content Creation Output](ai3.png)
 
 ## 📦 Installation
 
