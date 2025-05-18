@@ -37,6 +37,10 @@ An MVP (Minimum Viable Product) **AI-powered Resume Generator** built using the 
 
 ---
 
+### Output
+
+![Content Creation Output](ccd.png)
+
 ## 📦 Installation
 
 1. **Clone the Repository**
